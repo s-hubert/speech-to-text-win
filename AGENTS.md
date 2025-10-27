@@ -8,11 +8,12 @@ This project is a Python-based Windows tray application that provides speech-to-
 
 The application is structured into the following modules:
 
--   `main.py`: The main entry point of the application.
--   `config.py`: Contains the application's configuration and global state.
--   `recorder.py`: Handles audio recording and transcription.
--   `hotkey.py`: Manages the global hotkey for recording.
--   `tray.py`: Manages the system tray icon and menu.
+- `main.py`: The main entry point of the application.
+- `config.py`: Contains the application's configuration and global state.
+- `recorder.py`: Handles audio recording and transcription.
+- `hotkey.py`: Manages the global hotkey for recording.
+- `tray.py`: Manages the system tray icon and menu.
+- `notifications.py`: Manages the system notifications
 
 ## Speech Recognition
 
@@ -20,17 +21,18 @@ The core speech recognition functionality is provided by the [`SpeechRecognition
 
 The application allows the user to choose between two recognition models:
 
--   **Faster Whisper (local)**: This uses the `recognize_faster_whisper()` method for local, offline speech recognition. It is based on a reimplementation of OpenAI's Whisper model, optimized for speed. The "tiny" model is used.
--   **Google Speech Recognition API (online)**: This uses the `recognize_google()` method, which requires an internet connection.
+- **Whisper (local)**: This uses the `recognize_whisper()` method, which requires an internet connection. [docs](https://raw.githubusercontent.com/openai/whisper/refs/heads/main/README.md)
+- **Faster Whisper (local)**: This uses the `recognize_faster_whisper()` method for local, offline speech recognition. It is based on a reimplementation of OpenAI's Whisper model, optimized for speed. The "tiny" model is used. [docs](https://raw.githubusercontent.com/SYSTRAN/faster-whisper/refs/heads/master/README.md)
+- **Google Speech Recognition API (online)**: This uses the `recognize_google()` method, which requires an internet connection. [docs](https://cloud.google.com/speech-to-text/docs/reference/rest)
 
 ### Language Support
 
 The application supports multiple languages. The language can be selected from the tray icon menu. The supported languages and their corresponding codes are:
 
--   **English**: `en`
--   **German**: `de`
--   **French**: `fr`
--   **Italian**: `it`
+- **English**: `en`
+- **German**: `de`
+- **French**: `fr`
+- **Italian**: `it`
 
 The default language is determined by the user's system locale. The application handles the conversion of language codes to the format required by the selected speech recognition model.
 
@@ -44,6 +46,6 @@ pip install -r requirements.txt
 
 The key dependencies for speech recognition are:
 
--   `SpeechRecognition[faster-whisper]`: This installs the `SpeechRecognition` library along with the necessary extras for `faster-whisper`.
--   `soundfile`: This is required for reading audio files.
--   `pyaudio`: This is used for microphone input.
+- `SpeechRecognition[faster-whisper]`: This installs the `SpeechRecognition` library along with the necessary extras for `faster-whisper`.
+- `soundfile`: This is required for reading audio files.
+- `pyaudio`: This is used for microphone input.

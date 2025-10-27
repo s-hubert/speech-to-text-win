@@ -1,4 +1,5 @@
 pynput
+SpeechRecognition[whisper-local]
 SpeechRecognition[faster-whisper]
 pyaudio
 pystray

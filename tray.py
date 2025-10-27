@@ -71,6 +71,7 @@ def create_tray_icon():
     )
 
     model_menu = Menu(
+        MenuItem('Whisper (local)', set_model('whisper'), checked=is_model_selected('whisper'), radio=True),
         MenuItem('Faster Whisper (local)', set_model('faster_whisper'), checked=is_model_selected('faster_whisper'), radio=True),
         MenuItem('Google Speech Recognition API (online)', set_model('google'), checked=is_model_selected('google'), radio=True)
     )

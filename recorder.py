@@ -126,7 +126,11 @@ def transcribe_audio(filename):
         r.adjust_for_ambient_noise(source)
         audio_data = r.record(source)
         try:
-            if config.current_model == "faster_whisper":
+            if config.current_model == "whisper":
+                # Using Whisper on CPU
+                text = r.recognize_whisper(audio_data, model="turbo", language=config.current_language)
+                print(f"Recognized with Whisper: {text}")
+            elif config.current_model == "faster_whisper":
                 # Using Faster Whisper on CPU
                 text = r.recognize_faster_whisper(audio_data, model="tiny", language=config.current_language, init_options={"device": "cpu"})
                 print(f"Recognized with Faster Whisper: {text}")
