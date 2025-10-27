@@ -1,6 +1,7 @@
 pynput
-speechrecognition
+SpeechRecognition[faster-whisper]
 pyaudio
 pystray
 Pillow
 pyinstaller
+soundfile

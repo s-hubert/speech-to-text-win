@@ -35,10 +35,10 @@ RATE = 16000
 def get_default_language():
     """Detects the system's default language and returns a supported language code."""
     language_map = {
-        'en': 'en-US',
-        'de': 'de-DE',
-        'fr': 'fr-FR',
-        'it': 'it-IT'
+        'en': 'en',
+        'de': 'de',
+        'fr': 'fr',
+        'it': 'it'
     }
     try:
         default_lang, _ = locale.getdefaultlocale()
@@ -49,7 +49,7 @@ def get_default_language():
     except Exception:
         # In case locale detection fails
         pass
-    return 'en-US' # Default fallback
+    return 'en' # Default fallback
 
 # --- Global State ---
 is_recording = False
@@ -60,9 +60,23 @@ stop_event = threading.Event()
 tray_icon = None
 icon_red = None
 icon_green = None
+icon_yellow = None
 ctrl_press_timer = None
 ctrl_key_pressed = False
 current_language = get_default_language()
+current_model = "faster_whisper"
+
+def set_model(model_name):
+    def on_set_model(icon, item):
+        global current_model
+        current_model = model_name
+    return on_set_model
+
+def is_model_selected(model_name):
+    def on_is_selected(item):
+        global current_model
+        return current_model == model_name
+    return on_is_selected
 
 def create_image(color):
     """Creates an icon image with a colored dot."""
@@ -153,12 +167,13 @@ def record_loop():
 
 def stop_recording_and_transcribe():
     """Stops recording, saves the audio, and initiates transcription."""
-    global is_recording, p, stream, tray_icon, icon_red
+    global is_recording, p, stream, tray_icon, icon_yellow
     if not is_recording:
         return
 
     if tray_icon:
-        tray_icon.icon = icon_red
+        tray_icon.icon = icon_yellow
+        tray_icon.notify("Transcribing...")
 
     print("Stopping recording...")
     is_recording = False
@@ -168,7 +183,7 @@ def stop_recording_and_transcribe():
 
 def _finish_processing():
     """Saves audio to a file and transcribes it."""
-    global stream, p, audio_frames
+    global stream, p, audio_frames, tray_icon, icon_red
     
     stream.stop_stream()
     stream.close()
@@ -184,17 +199,32 @@ def _finish_processing():
     print("Audio saved. Transcribing...")
     transcribe_audio(RECORDING_FILENAME)
 
+    if tray_icon:
+        tray_icon.icon = icon_red
+
 def transcribe_audio(filename):
     """Converts audio file to text and types it."""
-    global current_language
+    global current_language, current_model
     r = sr.Recognizer()
     with sr.AudioFile(filename) as source:
         r.adjust_for_ambient_noise(source)
         audio_data = r.record(source)
         try:
-            # Using Google's free web speech API
-            text = r.recognize_google(audio_data, language=current_language)
-            print(f"Recognized: {text}")
+            if current_model == "faster_whisper":
+                # Using Faster Whisper on CPU
+                text = r.recognize_faster_whisper(audio_data, model="tiny", language=current_language, init_options={"device": "cpu"})
+                print(f"Recognized with Faster Whisper: {text}")
+            else: # google
+                google_language_map = {
+                    'en': 'en-US',
+                    'de': 'de-DE',
+                    'fr': 'fr-FR',
+                    'it': 'it-IT'
+                }
+                google_language = google_language_map.get(current_language, 'en-US')
+                # Using Google's free web speech API
+                text = r.recognize_google(audio_data, language=google_language)
+                print(f"Recognized with Google: {text}")
             
             set_clipboard(text)
 
@@ -205,9 +235,9 @@ def transcribe_audio(filename):
                 keyboard_controller.release('v')
 
         except sr.UnknownValueError:
-            print("Google Speech Recognition could not understand audio")
+            print(f"{current_model} could not understand audio")
         except sr.RequestError as e:
-            print(f"Could not request results from Google Speech Recognition service; {e}")
+            print(f"Could not request results from {current_model}; {e}")
 
 # --- Hotkey Listener ---
 
@@ -261,21 +291,28 @@ def open_about(icon, item):
 
 def create_tray_icon():
     """Creates and runs the system tray icon for the application."""
-    global tray_icon, icon_red, icon_green
+    global tray_icon, icon_red, icon_green, icon_yellow
     
     icon_red = create_image("red")
     icon_green = create_image("green")
+    icon_yellow = create_image("yellow")
 
     language_menu = Menu(
-        MenuItem('English', set_language('en-US'), checked=is_language_selected('en-US'), radio=True),
-        MenuItem('German', set_language('de-DE'), checked=is_language_selected('de-DE'), radio=True),
-        MenuItem('French', set_language('fr-FR'), checked=is_language_selected('fr-FR'), radio=True),
-        MenuItem('Italian', set_language('it-IT'), checked=is_language_selected('it-IT'), radio=True)
+        MenuItem('English', set_language('en'), checked=is_language_selected('en'), radio=True),
+        MenuItem('German', set_language('de'), checked=is_language_selected('de'), radio=True),
+        MenuItem('French', set_language('fr'), checked=is_language_selected('fr'), radio=True),
+        MenuItem('Italian', set_language('it'), checked=is_language_selected('it'), radio=True)
+    )
+
+    model_menu = Menu(
+        MenuItem('Faster Whisper (local)', set_model('faster_whisper'), checked=is_model_selected('faster_whisper'), radio=True),
+        MenuItem('Google Speech Recognition API (online)', set_model('google'), checked=is_model_selected('google'), radio=True)
     )
 
     main_menu = Menu(
         MenuItem(recording_text, toggle_recording),
         MenuItem('Language', language_menu),
+        MenuItem('Model', model_menu),
         MenuItem('About', open_about),
         MenuItem('Exit', on_exit)
     )
