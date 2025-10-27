@@ -1,0 +1,6 @@
+pynput
+speechrecognition
+pyaudio
+pystray
+Pillow
+pyinstaller
