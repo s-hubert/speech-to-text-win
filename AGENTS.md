@@ -6,15 +6,22 @@ This document provides context for AI coding assistants to understand the techni
 
 This project is a Python-based Windows tray application that provides speech-to-text functionality. It allows the user to record their voice and have the transcribed text typed out at the current cursor position. The application is designed to be simple and hands-free.
 
+The application is structured into the following modules:
+
+-   `main.py`: The main entry point of the application.
+-   `config.py`: Contains the application's configuration and global state.
+-   `recorder.py`: Handles audio recording and transcription.
+-   `hotkey.py`: Manages the global hotkey for recording.
+-   `tray.py`: Manages the system tray icon and menu.
+
 ## Speech Recognition
 
 The core speech recognition functionality is provided by the [`SpeechRecognition`](https://pypi.org/project/SpeechRecognition/) library. This library acts as a wrapper for various speech recognition engines and APIs.
 
-### Recognizer: Faster Whisper
+The application allows the user to choose between two recognition models:
 
-This project uses the **Faster Whisper** recognizer through the `recognize_faster_whisper()` method provided by the `SpeechRecognition` library. Faster Whisper is a reimplementation of OpenAI's Whisper model that is optimized for speed and efficiency, especially on CPUs.
-
-The "tiny" model is used to provide a good balance between performance and accuracy.
+-   **Faster Whisper (local)**: This uses the `recognize_faster_whisper()` method for local, offline speech recognition. It is based on a reimplementation of OpenAI's Whisper model, optimized for speed. The "tiny" model is used.
+-   **Google Speech Recognition API (online)**: This uses the `recognize_google()` method, which requires an internet connection.
 
 ### Language Support
 
@@ -25,7 +32,7 @@ The application supports multiple languages. The language can be selected from t
 -   **French**: `fr`
 -   **Italian**: `it`
 
-The default language is determined by the user's system locale.
+The default language is determined by the user's system locale. The application handles the conversion of language codes to the format required by the selected speech recognition model.
 
 ## Dependencies
 
@@ -40,5 +47,3 @@ The key dependencies for speech recognition are:
 -   `SpeechRecognition[faster-whisper]`: This installs the `SpeechRecognition` library along with the necessary extras for `faster-whisper`.
 -   `soundfile`: This is required for reading audio files.
 -   `pyaudio`: This is used for microphone input.
-
-By using `SpeechRecognition[faster-whisper]`, the installation process handles the setup of `faster-whisper` and its dependencies.
