@@ -28,6 +28,10 @@ def recording_text(item):
 def set_language(language_code):
     def on_set_language(icon, item):
         config.current_language = language_code
+        try:
+            config.save_settings()
+        except Exception:
+            pass
     return on_set_language
 
 def is_language_selected(language_code):
@@ -38,6 +42,10 @@ def is_language_selected(language_code):
 def set_model(model_name):
     def on_set_model(icon, item):
         config.current_model = model_name
+        try:
+            config.save_settings()
+        except Exception:
+            pass
     return on_set_model
 
 def is_model_selected(model_name):
@@ -71,6 +79,7 @@ def create_tray_icon():
     )
 
     model_menu = Menu(
+        MenuItem('Whisper (local)', set_model('whisper'), checked=is_model_selected('whisper'), radio=True),
         MenuItem('Faster Whisper (local)', set_model('faster_whisper'), checked=is_model_selected('faster_whisper'), radio=True),
         MenuItem('Google Speech Recognition API (online)', set_model('google'), checked=is_model_selected('google'), radio=True)
     )
