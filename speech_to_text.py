@@ -16,6 +16,7 @@ import threading
 import ctypes
 import locale
 import wave
+import webbrowser
 import pyaudio
 import winsound
 import speech_recognition as sr
@@ -254,6 +255,10 @@ def is_language_selected(language_code):
         return current_language == language_code
     return on_is_selected
 
+def open_about(icon, item):
+    """Opens the GitHub repository in a web browser."""
+    webbrowser.open("https://github.com/s-hubert/speech-to-text-win")
+
 def create_tray_icon():
     """Creates and runs the system tray icon for the application."""
     global tray_icon, icon_red, icon_green
@@ -271,6 +276,7 @@ def create_tray_icon():
     main_menu = Menu(
         MenuItem(recording_text, toggle_recording),
         MenuItem('Language', language_menu),
+        MenuItem('About', open_about),
         MenuItem('Exit', on_exit)
     )
 
