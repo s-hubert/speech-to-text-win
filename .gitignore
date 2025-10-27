@@ -3,3 +3,7 @@ build/**
 
 **/*.wav
 .env
+venv/**
+__pycache__/**
+
+main.spec
