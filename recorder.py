@@ -4,6 +4,7 @@ import winsound
 import speech_recognition as sr
 import pyaudio
 from pynput.keyboard import Controller as KeyboardController
+from pynput import keyboard
 import ctypes
 
 import config
@@ -89,7 +90,6 @@ def stop_recording_and_transcribe():
 
     if config.tray_icon:
         config.tray_icon.icon = config.icon_yellow
-        config.tray_icon.notify("Transcribing...")
 
     print("Stopping recording...")
     config.is_recording = False

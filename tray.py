@@ -84,7 +84,7 @@ def create_tray_icon():
     )
 
     config.tray_icon = Icon(
-        "VoiceToText",
+        "Speech-To-Text",
         config.icon_red,
         "Voice-to-Text",
         menu=main_menu
