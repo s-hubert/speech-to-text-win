@@ -8,6 +8,7 @@ from pynput import keyboard
 import ctypes
 
 import config
+import notifications
 
 def set_clipboard(text):
     """Copies the given text to the clipboard using the Windows API."""
@@ -54,8 +55,9 @@ def start_recording():
     if config.is_recording:
         return
 
+    notifications.show_notification("Recording started...", title="Speech-To-Text", timeout=3)
+
     if config.tray_icon:
-        config.tray_icon.notify("Recording started...", title="Speech-To-Text")
         config.tray_icon.icon = config.icon_green
     
     winsound.Beep(1000, 200)

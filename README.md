@@ -36,6 +36,6 @@ To install the dependencies, follow these steps:
 To create a standalone executable, you can use `pyinstaller`:
 
 ```
-pyinstaller --noconsole --onefile --windowed main.py
+pyinstaller --noconsole --onefile --windowed --name SpeechToTextWin main.py
 ```
 This will create a single executable file in the `dist` folder.
