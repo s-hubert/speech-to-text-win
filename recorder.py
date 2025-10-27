@@ -55,7 +55,7 @@ def start_recording():
         return
 
     if config.tray_icon:
-        config.tray_icon.notify("Recording started...")
+        config.tray_icon.notify("Recording started...", title="Speech-To-Text")
         config.tray_icon.icon = config.icon_green
     
     winsound.Beep(1000, 200)
