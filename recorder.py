@@ -55,7 +55,7 @@ def start_recording():
     if config.is_recording:
         return
 
-    notifications.show_notification("Recording started...", title="Speech-To-Text", timeout=3)
+    notifications.show_notification("Recording started...", title="Speech-To-Text")
 
     if config.tray_icon:
         config.tray_icon.icon = config.icon_green
@@ -114,6 +114,7 @@ def _finish_processing():
 
     print("Audio saved. Transcribing...")
     transcribe_audio(config.RECORDING_FILENAME)
+    notifications.close_notification()
 
     if config.tray_icon:
         config.tray_icon.icon = config.icon_red

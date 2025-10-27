@@ -10,3 +10,8 @@ def show_notification(message, title, timeout=None):
                 config.tray_icon.remove_notification()
 
             threading.Timer(timeout, remove).start()
+
+def close_notification():
+    """Closes the notification."""
+    if config.tray_icon:
+        config.tray_icon.remove_notification()
