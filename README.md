@@ -9,7 +9,7 @@ The main purpose of this application is to provide a simple, hands-free way to t
 ## Usage
 
 1. Run the application by executing the `main.py` script: `python main.py`. A new icon will appear in your system tray.
-2. Click the tray icon to toggle the listening state.
+2. Click the tray icon to toggle the listening state. Or hold Ctrl key for 2 seconds (and hold pressed as long as you speak).
 3. When the icon is green, the application is listening for your voice.
 4. When the icon is yellow, the application is transcribing your voice.
 5. When the icon is red, the application is not listening.
